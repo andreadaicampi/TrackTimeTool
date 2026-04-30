@@ -470,21 +470,41 @@ function refreshRemoteEvents(showAlert){
         if (showAlert) alert('Your browser does not support fetch().');
         return;
     }
-    // cache-busting query string so we always check for updates
-    var url = REMOTE_EXCEL_URL + '?t=' + Date.now();
-    fetch(url, {cache: 'no-cache'})
-        .then(function(resp){
-            if (!resp.ok) throw new Error('HTTP ' + resp.status);
-            return resp.arrayBuffer();
-        })
-        .then(function(buf){
-            var ok = importExcelArrayBuffer(buf, {source: 'server', alertOnSuccess: !!showAlert});
-            if (ok && !showAlert) console.log('Auto-fetched events from ' + REMOTE_EXCEL_URL);
-        })
-        .catch(function(err){
-            console.warn('refreshRemoteEvents failed:', err.message);
-            if (showAlert) alert('Could not fetch ' + REMOTE_EXCEL_URL + ':\n' + err.message + '\n\n(Using locally stored events.)');
-        });
+    // Aggressive cache bypass:
+    //  1. cache-busting query string -> different URL each call, defeats HTTP caches
+    //  2. cache:'no-store' -> tells browser not to use HTTP cache at all
+    //  3. We'll also explicitly purge the SW cache for this file before fetching.
+    var url = REMOTE_EXCEL_URL + '?t=' + Date.now() + '&r=' + Math.random().toString(36).slice(2);
+
+    var purgePromise = (typeof caches !== 'undefined' && caches.keys)
+        ? caches.keys().then(function(keys){
+            return Promise.all(keys.map(function(k){
+                return caches.open(k).then(function(c){
+                    // delete every cached entry whose URL contains Events.xlsx
+                    return c.keys().then(function(reqs){
+                        return Promise.all(reqs.filter(function(r){ return r.url.indexOf('Events.xlsx') !== -1; })
+                                              .map(function(r){ return c.delete(r); }));
+                    });
+                });
+            }));
+          }).catch(function(){ /* ignore */ })
+        : Promise.resolve();
+
+    purgePromise.then(function(){
+        return fetch(url, {cache: 'no-store'});
+    })
+    .then(function(resp){
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        return resp.arrayBuffer();
+    })
+    .then(function(buf){
+        var ok = importExcelArrayBuffer(buf, {source: 'server', alertOnSuccess: !!showAlert});
+        if (ok && !showAlert) console.log('Auto-fetched events from ' + REMOTE_EXCEL_URL);
+    })
+    .catch(function(err){
+        console.warn('refreshRemoteEvents failed:', err.message);
+        if (showAlert) alert('Could not fetch ' + REMOTE_EXCEL_URL + ':\n' + err.message + '\n\n(Using locally stored events.)');
+    });
 }
 
 // Try once on startup, but only when running over http(s) - not file://

@@ -1,6 +1,6 @@
 // TimeTool service worker - offline-first
 // Bump CACHE_VERSION whenever you ship code changes so clients refresh assets.
-const CACHE_VERSION = 'timetool-v4';
+const CACHE_VERSION = 'timetool-v5';
 const APP_SHELL = [
     './',
     './index.html',
@@ -45,14 +45,9 @@ self.addEventListener('fetch', (event) => {
     // Only handle same-origin requests (skip CDN, analytics, etc.)
     if (url.origin !== self.location.origin) return;
 
-    if (url.pathname.endsWith('/Events.xlsx') || url.pathname.endsWith('events/Events.xlsx')) {
-        event.respondWith(
-            fetch(req).then(resp => {
-                const copy = resp.clone();
-                caches.open(CACHE_VERSION).then(c => c.put(req, copy));
-                return resp;
-            }).catch(() => caches.match(req))
-        );
+    if (url.pathname.indexOf('Events.xlsx') !== -1) {
+        // Bypass SW entirely: don't intercept, don't cache.
+        // The fetch goes straight to network, no stale data possible.
         return;
     }
 
