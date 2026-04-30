@@ -1,0 +1,139 @@
+html,
+body {
+  height: 100%;
+  background-color: #333;
+  background-color: #000000;
+  color: white;
+}
+
+
+.headline {
+    font-weight: 700;
+    font-size: 8vmin;   /*fontsize relativ to view width 1vw = 1% view width */
+    text-align: center;
+}
+
+.dateTime {
+    font-weight: 600;
+    font-size: 6vmin;   /*fontsize relativ to view width 1vw = 1% view width */
+    text-align: center;
+}
+
+.mainText {
+    font-weight: 700;
+    font-size: 14vmin;   /*fontsize relativ to view width 1vw = 1% view width */
+    text-align: center;
+    padding-top: 2vmin;
+    line-height: normal;
+}
+
+.mainTime {
+    font-weight: 700;
+    font-size: 19vmin;   /*fontsize relativ to view width 1vw = 1% view width */
+    text-align: center;
+    padding-top: -5vmin;
+    /*height: 25vmin;
+    margin:0px;*/
+    padding: 0px;
+    padding-bottom: 2vmin;
+    line-height: normal;
+    
+}
+
+.table {
+    width: 100%;
+    font-weight: 600;
+    font-size: 3vmin;    
+}
+
+.orgaText {
+    font-weight: 700;
+    font-size: 5vmin;
+    text-align: center;
+    padding:10px;
+}
+
+.red {
+    background-color: red;
+}
+
+.green {
+    background-color: green;
+}
+
+.blink {
+    -webkit-animation: blinking 1s infinite;  /* Safari 4+ */
+    -moz-animation: blinking 1s infinite;  /* Fx 5+ */
+    -o-animation: blinking 1s infinite;  /* Opera 12+ */
+    animation: blinking 1s infinite;  /* IE 10+, Fx 29+ */
+  }
+  
+  @-webkit-keyframes blinking {
+    0%, 49% {
+      background-color: green;
+    }
+    50%, 100% {
+      background-color: red;
+    }
+  }
+
+/* ---------- Mobile / PWA tweaks ---------- */
+@media (max-width: 600px) {
+    .headline   { font-size: 6vmin; }
+    .dateTime   { font-size: 5vmin; }
+    .mainText   { font-size: 9vmin; padding-top: 4vmin; }
+    .mainTime   { font-size: 22vmin; padding-bottom: 4vmin; }
+    .table      { font-size: 3.5vmin; }
+    .orgaText   { font-size: 5vmin; }
+
+    /* on mobile, panel buttons need more breathing room */
+    #navbarHeader .col, #navbarHeader .col-sm-4, #navbarHeader .col-sm-8 {
+        flex: 0 0 100%;
+        max-width: 100%;
+        margin-bottom: .5rem;
+    }
+    #navbarHeader input[type="text"],
+    #navbarHeader input[type="number"],
+    #navbarHeader input[type="date"],
+    #navbarHeader input[type="time"],
+    #navbarHeader select { width: 100%; min-height: 36px; }
+    #navbarHeader .btn { padding: .5rem 1rem; }
+
+    /* hamburger toggler bigger for fingers */
+    .navbar-toggler { padding: .75rem 1rem; }
+}
+
+/* on touch devices keep the cursor visible (touch is the cursor) */
+@media (hover: none) {
+    body { cursor: default !important; }
+}
+
+/* prevent iOS Safari from auto-zooming on input focus */
+@media (max-width: 600px) {
+    input, select, textarea { font-size: 16px; }
+}
+
+/* Update banner pinned at the bottom */
+#updateBanner {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: #2c5aa0;
+    color: white;
+    padding: .5rem 1rem;
+    text-align: center;
+    font-size: 14px;
+    z-index: 9999;
+    box-shadow: 0 -2px 8px rgba(0,0,0,.4);
+    display: none;
+}
+#updateBanner.show { display: block; }
+#updateBanner button {
+    margin-left: .75rem;
+    padding: .25rem .75rem;
+    background: white;
+    color: #2c5aa0;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+}
