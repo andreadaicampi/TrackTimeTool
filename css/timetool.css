@@ -94,10 +94,10 @@ body {
 }
 
 @media (max-width: 600px) {
-    .headline   { font-size: 8vmin; padding-top: 1vmin; }
+    .headline   { font-size: 7vmin; padding-top: 1vmin; }
     .dateTime   { font-size: 5vmin; }
-    .mainText   { font-size: 11vmin; padding-top: 5vmin; }
-    .mainTime   { font-size: 28vmin; padding-bottom: 3vmin; }
+    .mainText   { font-size: 9vmin; padding-top: 4vmin; }
+    .mainTime   { font-size: 20vmin; padding-bottom: 3vmin; letter-spacing: -0.02em; }
     .table      { font-size: 3.8vmin; }
     .orgaText   { font-size: 5vmin; padding: 3px 10px; }
 
