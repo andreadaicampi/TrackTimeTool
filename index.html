@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover">
+    <meta name="description" content="Race event countdown for the team">
+    <meta name="author" content="">
+    <meta name="theme-color" content="#000000">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="TimeTool">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="img/favicon-32x32.png" sizes="32x32" />
+    <!--<link rel="icon" href="favicon.ico">-->
+
+    <title>TimeTool</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/timetool.css" rel="stylesheet"> 
+  </head>
+
+  <body onload="startTime()">
+
+    <header>
+
+        <div class="collapse bg-dark" id="navbarHeader">
+          <div class="container">
+            <div class="row">
+              <div class="col-sm-12">
+                
+                <div class="container">
+                  <div class="row">
+                    <div class="col font-weight-bold">Create Event:</div>
+                  </div>
+                  <div class="row">
+                    <div class="col">Type<br><select id="Ftype" size="1"><option value="0">Track Event</option><option value="1">Orga Event</option></select></div>
+                    <div class="col">Name<br><input type="text" id="Fname" value="Race 1"></div>
+                    <div class="col">Date<br><input type="date" id="FstartDate" ></div>
+                    <div class="col">Time<br><input type="time" id="FstartTime" value="09:00"></div>
+                    <div class="col">Duration [Minuten]<br><input type="number" id="Fduration" value="0"></div>
+                    <div class="col"><br><button onclick="save()" type="button" class="btn btn-primary btn-sm">SAVE</button></div>
+                  </div>
+                </div>              
+
+              </div>
+            </div>
+            
+            <div class="row">
+              <div class="col-sm-8">
+                  <br>
+                  <p class="font-weight-bold">Race Events:</p>
+                  <p id="raceEvents" style="line-height:40px;"></p>
+                  <p class="font-weight-bold">Orga Events:</p>
+                  <p id="orgaEvents" style="line-height:40px;"></p>
+              </div>
+              <div class="col-sm-4">
+                <br>
+                  <p class="font-weight-bold">Settings:</p>
+                  <p>Teamname:<br><input type="text" id="Fteamname" onchange="changeTeamname()" value="Teamname"></p>
+                  <p>Clock offset [min]:<br><input type="number" id="Toffset" onchange="changeOffset()" value="0"></p>
+                  <!--<p>Events delay [min]:<br><input type="number" id="Toffset" onchange="changeOffset()" value="0"></p>-->
+                  <p><br><button onclick="addSamples()" type="button" class="btn btn-primary btn-sm" title="add some example Events">Add Samples</button> <button title="delete all events and reset Offset" onclick="reset()" type="button" class="btn btn-sm">RESET</button></p>
+                  <p><button onclick="exportEvents()" type="button" class="btn btn-primary btn-sm" title="export Calender events as ics file">Cal Export</button>
+                  <input type="file" id="FexcelFile" accept=".xlsx,.xlsm,.xls,.csv" onchange="importExcel(this.files[0])" style="display:none">
+                  <button onclick="document.getElementById('FexcelFile').click()" type="button" class="btn btn-primary btn-sm" title="import events from an Excel file (replaces current events)">Import Excel</button>
+                  <button onclick="refreshRemoteEvents(true)" type="button" class="btn btn-primary btn-sm" title="fetch the latest Events.xlsx from the server">Refresh Events</button></p>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <!--<div class="navbar navbar-dark bg-dark box-shadow justify-content-end">
+          <div class=" justify-content-end">          -->
+            <button class="navbar-toggler navbar-dark bg-dark" style="position:absolute;top:0;right:0;" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+          <!--</div>
+        </div>-->
+  
+      </header>
+
+    <div class="container">
+        <div class="row no-gutters">
+          <div class="col headline" id="team_name">Teamname</div>          
+        </div>
+        <div class="row">
+            <div class="col-sm-4 dateTime text-sm-center text-md-left" id="date">16.12.2018</div>
+            <div class="col-sm-4 offset-md-4 mr-auto dateTime text-sm-center text-md-right" id="time">22:12:12</div>
+        </div>
+    </div>
+
+        
+    <div class="mainText" id="current_event">Test Race Event in</div>
+
+    <div class="mainTime" id="current_countdown">12:00</div>
+
+    <div  class="container">
+        <div class="row">
+            <div class="col">
+                <table class="table" id="raceNextEvents">
+                    <tr>
+                        <td>Test Race Event</td>
+                        <td>12:00</td>
+                        <td>(25min)</td>
+                        <td>12:12</td>
+                    </tr>
+                    <tr>
+                        <td>Test Race Event 2</td>
+                        <td>12:00</td>
+                        <td>(25min)</td>
+                        <td>12:12</td>
+                    </tr>
+                    <tr>
+                            <td>Test Race Event 2</td>
+                            <td>12:00</td>
+                            <td>(25min)</td>
+                            <td>12:12</td>
+                        </tr>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col orgaText" id="current_orga_event">Driver Briefing</div>
+        </div>
+    </div>
+
+        
+        <!--
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script>window.jQuery || document.write('<script src="../../../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+        <script src="../../../../assets/js/vendor/popper.min.js"></script>
+        <script src="../../../../dist/js/bootstrap.min.js"></script>
+        <script src="../../../../assets/js/vendor/holder.min.js"></script> 
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script>window.jQuery || document.write('<script src="../../../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+        -->
+        
+        <script src="js/jquery-3.3.1.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/xlsx.full.min.js"></script>
+        <script src="js/clock.js"></script>
+        <script src="js/ics.js"></script>
+
+        <div id="updateBanner">
+            <span id="updateBannerText">A new version is available.</span>
+            <button onclick="window.location.reload()">Reload</button>
+        </div>
+
+        <script>
+        // Register service worker (only when served over http(s), not file://)
+        if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('sw.js').then(function(reg) {
+                    // detect updates: if a new SW takes over, show banner
+                    reg.addEventListener('updatefound', function() {
+                        var newWorker = reg.installing;
+                        if (!newWorker) return;
+                        newWorker.addEventListener('statechange', function() {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                var b = document.getElementById('updateBanner');
+                                if (b) b.classList.add('show');
+                            }
+                        });
+                    });
+                }).catch(function(err) { console.warn('SW registration failed:', err); });
+            });
+        }
+        </script>
+    </body>
+    </html>
