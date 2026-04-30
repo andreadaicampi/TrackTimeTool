@@ -1,6 +1,6 @@
 // TimeTool service worker - offline-first
 // Bump CACHE_VERSION whenever you ship code changes so clients refresh assets.
-const CACHE_VERSION = 'timetool-v1';
+const CACHE_VERSION = 'timetool-v2';
 const APP_SHELL = [
     './',
     './index.html',

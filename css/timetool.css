@@ -78,13 +78,28 @@ body {
   }
 
 /* ---------- Mobile / PWA tweaks ---------- */
+
+/* iOS PWA standalone: respect notch / Dynamic Island / home indicator */
+html { background-color: #000; }       /* prevent white overscroll bounce on iOS */
+body {
+    padding-top:    env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left:   env(safe-area-inset-left);
+    padding-right:  env(safe-area-inset-right);
+}
+/* The hamburger button is position:absolute relative to viewport — push it below the notch too */
+.navbar-toggler {
+    top:   env(safe-area-inset-top, 0) !important;
+    right: env(safe-area-inset-right, 0) !important;
+}
+
 @media (max-width: 600px) {
-    .headline   { font-size: 6vmin; }
+    .headline   { font-size: 8vmin; padding-top: 1vmin; }
     .dateTime   { font-size: 5vmin; }
-    .mainText   { font-size: 9vmin; padding-top: 4vmin; }
-    .mainTime   { font-size: 22vmin; padding-bottom: 4vmin; }
-    .table      { font-size: 3.5vmin; }
-    .orgaText   { font-size: 5vmin; }
+    .mainText   { font-size: 11vmin; padding-top: 5vmin; }
+    .mainTime   { font-size: 28vmin; padding-bottom: 3vmin; }
+    .table      { font-size: 3.8vmin; }
+    .orgaText   { font-size: 5vmin; padding: 3px 10px; }
 
     /* on mobile, panel buttons need more breathing room */
     #navbarHeader .col, #navbarHeader .col-sm-4, #navbarHeader .col-sm-8 {
